@@ -16,24 +16,27 @@ function secondsToMinutesSeconds(seconds) {
 }
 
 songs = [
-    "/Songs/Hass_hass__diljit.mp3",
     "/Songs/Cheques_Bhojpuri_Song.mp3",
+    "/Songs/Hass_hass__diljit.mp3",
     "/Songs/Haye_Mera_DIl.mp3",
-    "/Songs/Tere_Liye.mp3",
+    "/Songs/Tere_Liye.mp3"
 ];
 
 const playMusic = (track, pause = false) => {
-    currentSong.src = track; // Updated to use the full URL directly
+    currentSong.src = "./Songs/" + track;
     if (!pause) {
         currentSong.play();
         play.src = "/img/pause.svg";
     }
-
-    document.querySelector(".songInfo").innerHTML = decodeURI(track.split("/").slice(-1)[0]);
+    document.querySelector(".songInfo").innerHTML = decodeURI(track);
     document.querySelector(".songTime").innerHTML = "00:00 / 00:00";
 };
 
+
+
 async function main() {
+    songs = await getSongs();
+
     playMusic(songs[0], true);
 
     // Show all the songs in the playlist
@@ -52,10 +55,12 @@ async function main() {
 
     // Attach an event listener in each song;
     Array.from(document.querySelector(".songList").getElementsByTagName("li")).forEach(e => {
-        e.addEventListener("click", element => {
-            playMusic(e.querySelector("div").firstElementChild.innerHTML.trim());
+        e.addEventListener("click", () => {
+            let selectedSong = e.querySelector("div").firstElementChild.innerHTML.trim();
+            playMusic(selectedSong);
         });
     });
+    
 
     // Attach an event listener to play, next, and previous
     play.addEventListener("click", () => {
@@ -95,7 +100,7 @@ async function main() {
     // Add an event listener for previous
     previous.addEventListener("click", () => {
         let index = songs.indexOf(currentSong.src); // Use the full URL for indexing
-        if ((index - 1) >= 0) {
+        if ((index - 1) >= 0) { 
             playMusic(songs[index - 1]);
         }
     });
@@ -108,6 +113,9 @@ async function main() {
             playMusic(songs[index + 1]);
         }
     });
+
+    console.log("Current song source:", currentSong.src);
+
 }
 
 main();

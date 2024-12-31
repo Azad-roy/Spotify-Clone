@@ -21,9 +21,7 @@ async function getSongs(){
     let response= await a.text();
     let div= document.createElement("div");
     div.innerHTML=response;
-    // console.log(div);
     let as=div.getElementsByTagName("a");
-    // console.log(as);
 
     let songs=[];
     for(let index=0; index<as.length; index++){
@@ -42,7 +40,6 @@ const playMusic= (track,pause=false) =>{
         currentSong.play();
         play.src="/img/pause.svg";
     }
-    // console.log(currentSong.src);
 
 
     document.querySelector(".songInfo").innerHTML= decodeURI(track);
@@ -54,7 +51,6 @@ async function main(){
     songs= await getSongs();
     
     playMusic(songs[0], true);
-    // console.log(songs);
 
     // Show all the songs in the playlist
     let songUl=document.querySelector(".songList").getElementsByTagName("ul")[0];
@@ -91,7 +87,6 @@ async function main(){
 
     // Listen for time update event
     currentSong.addEventListener("timeupdate", ()=>{
-        // console.log(currentSong.currentTime, currentSong.duration);
         document.querySelector(".songTime").innerHTML=`${secondsToMinutesSeconds(currentSong.currentTime)} / ${secondsToMinutesSeconds(currentSong.duration)}`;
 
         document.querySelector(".circle").style.left=(currentSong.currentTime/currentSong.duration)*100+"%";
@@ -119,8 +114,6 @@ async function main(){
 
     // Add an event listener for previous
     previous.addEventListener("click", ()=>{
-        console.log("Previous clicked");
-        console.log(currentSong.src);
 
         let index=songs.indexOf(currentSong.src.split("/").slice(-1) [0]);
 
@@ -132,18 +125,22 @@ async function main(){
     // Add an event listener for next
     next.addEventListener("click", () => {
         currentSong.pause();
-        console.log("Nex t clicked");
-        // console.log(currentSong.src.split(" "));
-        // console.log(currentSong.src.split("/").slice(-1));
         let index=songs.indexOf(currentSong.src.split("/").slice(-1) [0]); 
-        // console.log(index);
-        // console.log(songs,index)
 
         // playMusic(songs[index+1]);
 
         if((index+1)<songs.length){
             playMusic(songs[index+1]);
         }
+    })
+
+    // Add an event to volume
+    document.querySelector(".range").getElementsByTagName("input")[0].addEventListener('change',(e)=>{
+        // console.log(e, e.target, e.target.value)
+
+        console.log("Setting volume to",e.target.value,"/100")
+
+        currentSong.volume=parseInt(e.target.value)/100;
     })
 } 
 main();
