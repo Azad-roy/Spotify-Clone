@@ -1,5 +1,6 @@
 let currentSong= new Audio();
 let songs;
+let currFolder;
 
 function secondsToMinutesSeconds(seconds) {
     if (isNaN(seconds) || seconds < 0) {
@@ -15,9 +16,10 @@ function secondsToMinutesSeconds(seconds) {
     return `${formattedMinutes}:${formattedSeconds}`;
 }
 
-async function getSongs(){
+async function getSongs(folder){
+    currFolder=folder;
 
-    let a = await fetch("http://127.0.0.1:5500/Songs/");
+    let a = await fetch(`http://127.0.0.1:5500/${folder}/`);
     let response= await a.text();
     let div= document.createElement("div");
     div.innerHTML=response;
@@ -27,7 +29,7 @@ async function getSongs(){
     for(let index=0; index<as.length; index++){
         const element=as[index];
         if(element.href.endsWith(".mp3")){
-            songs.push(element.href.split("/Songs/")[1]);
+            songs.push(element.href.split(`/${folder}/`)[1]);
         }
     }
     return songs;
@@ -35,7 +37,7 @@ async function getSongs(){
 
 const playMusic= (track,pause=false) =>{
     // let audio= new Audio(/Songs/ + track);
-    currentSong.src=(/Songs/ + track)
+    currentSong.src=(`/${currFolder}/` + track) 
     if(!pause){
         currentSong.play();
         play.src="/img/pause.svg";
@@ -48,7 +50,7 @@ const playMusic= (track,pause=false) =>{
 
 async function main(){
     // Get the list of all songs.
-    songs= await getSongs();
+    songs= await getSongs("Songs/Fav");
     
     playMusic(songs[0], true);
 
@@ -141,6 +143,9 @@ async function main(){
         console.log("Setting volume to",e.target.value,"/100")
 
         currentSong.volume=parseInt(e.target.value)/100;
+
+        // Load the card whenever the click
+         
     })
 } 
 main();

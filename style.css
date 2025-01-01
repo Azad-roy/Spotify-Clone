@@ -119,6 +119,13 @@ body {
     border-radius: 10px;
     background-color: #252525;
     position: relative;
+    transition: all 0.9s ease-out;
+}
+
+.card:hover{
+    opacity: 1;
+    background-color: rgb(83, 82, 82);
+    cursor: pointer;
 }
 
 .card>* {
